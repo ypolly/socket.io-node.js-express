@@ -5,7 +5,7 @@ const socketio = require('socket.io');
 const {formatMessage, formatGif} = require('./utils/messages');
 
 const request= require('request');
-const apiRequest = require('./utils/api');
+const {apiRequest, apiRequestRandom} = require('./utils/api');
 const {
   userJoin,
   getCurrentUser,
@@ -50,14 +50,33 @@ io.on('connection', socket => {
   });
 
   socket.on('apiRequest',  (search, callback) =>{
-       apiRequest('love').then(data => {
-           var img = JSON.parse(JSON.stringify(data));
-           //console.log('Data:', img.data[0].images.original.url);
-           const user = getCurrentUser(socket.id);
-           io.to(user.room).emit('gif', formatGif(user.username, img.data[0].images.original.url));
+      switch(search){
+          case 'val1':
+           { apiRequest('love').then(data => {
+                var img = JSON.parse(JSON.stringify(data));
+                //console.log('Data:', img.data[0].images.original.url);
+                const user = getCurrentUser(socket.id);
+                io.to(user.room).emit('gif', formatGif(user.username, img.data[0].images.original.url));
+     
+             })
+                              .catch(err => console.log('Error:', err));
+              break;
+            }
 
-        })
-                         .catch(err => console.log('Error:', err));
+            case 'val2':
+                    { apiRequestRandom().then(data => {
+                        var img = JSON.parse(JSON.stringify(data));
+                        //console.log('Data:', data);
+                        const user = getCurrentUser(socket.id);
+                        io.to(user.room).emit('gif', formatGif(user.username, img.data.images.original.url));
+             
+                     })
+                                      .catch(err => console.log('Error:', err));
+                      break;
+                    }
+      }
+       
+       
         //console.log(api)
     });
     
