@@ -5,4 +5,10 @@ function formatMessage(username, text){
     }
 };
 
-module.exports = formatMessage;
+function formatGif(username, url){
+    return{
+        username,
+        url
+    }
+};
+module.exports = {formatMessage, formatGif};

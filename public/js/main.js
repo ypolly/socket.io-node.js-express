@@ -3,23 +3,21 @@ const chatMessages = document.querySelector('.chat-messages');
 const roomName = document.getElementById('room-name');
 const userList = document.getElementById('users');
 
-// Get username and room from URL
+
 const { username, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true
 });
 
 const socket = io();
 
-// Join chatroom
+
 socket.emit('joinRoom', { username, room });
 
-// Get room and users
 socket.on('roomUsers', ({ room, users }) => {
   outputRoomName(room);
   outputUsers(users);
 });
 
-// Message from server
 socket.on('message', message => {
   console.log(message);
   outputMessage(message);
@@ -56,7 +54,7 @@ function outputMessage(message) {
   const p = document.createElement('p');
   p.classList.add('meta');
   p.innerText = message.username;
-  p.innerHTML += `<span>${message.time}</span>`;
+ // p.innerHTML += `<span>${message.time}</span>`;
   div.appendChild(p);
   const para = document.createElement('p');
   para.classList.add('text');
@@ -79,3 +77,65 @@ function outputUsers(users) {
     userList.appendChild(li);
   });
  }
+
+ socket.on('gif', url => {
+  console.log(url);
+  outputGif(url);
+
+  // Scroll down
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+});
+
+function outputGif(message){
+  const div = document.createElement('div');
+  div.classList.add('message');
+  const p = document.createElement('p');
+  p.classList.add('meta');
+  p.innerText = message.username;
+  //p.innerHTML += `<span>${message.time}</span>`;
+  div.appendChild(p);
+  const img = document.createElement('img');
+  img.src=message.url;
+  div.appendChild(img);
+  document.querySelector('.chat-messages').appendChild(div);
+}
+
+
+
+ 
+ $("#msg").on("input", function() {
+    console.log($("#msg").val());
+  if ( $("#msg").val() == '/'){
+  var $select = $('#gifOptions');
+  $select.show();
+  }
+     else {
+         $('#gifOptions').hide();
+     }
+});
+
+
+    $('#gifOptions').on('click', function(e) {
+    e.preventDefault;
+  var value = $(this).val().toString();
+  console.log(value);
+  socket.emit('apiRequest', value)
+});
+
+$(document).ready( () =>{
+     var myOptions = {
+        val1 : 'Gif',
+        val2: 'Random gif'
+    };
+    var gifOptions = $('#gifOptions');
+    gifOptions.hide();
+    $.each(myOptions, function(val, text) {
+        gifOptions.append(
+            $('<option></option>').val(val).html(text)
+        );
+    });
+}
+)
+
+
+
