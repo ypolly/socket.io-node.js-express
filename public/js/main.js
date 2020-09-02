@@ -105,7 +105,7 @@ function outputGif(message){
  
  $("#msg").on("input", function() {
     console.log($("#msg").val());
-  if ( $("#msg").val() == '/'){
+  if ( $("#msg").val()[0] == '/'){
   var $select = $('#gifOptions');
   $select.show();
   }
@@ -118,14 +118,17 @@ function outputGif(message){
     $('#gifOptions').on('click', function(e) {
     e.preventDefault;
   var value = $(this).val().toString();
-  console.log(value);
-  socket.emit('apiRequest', value)
+  var search=$("#msg").val();
+  search = search.substring(1).replace(/\s/g,'');
+  console.log(search);
+  socket.emit('apiRequest', {value, search})
 });
 
 $(document).ready( () =>{
      var myOptions = {
-        val1 : 'Gif',
-        val2: 'Random gif'
+        val1 : 'Gif /',
+        val2: 'Random gif',
+        val3: 'Weather'
     };
     var gifOptions = $('#gifOptions');
     gifOptions.hide();
