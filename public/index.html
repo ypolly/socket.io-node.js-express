@@ -20,7 +20,7 @@
 				<h1> SocketChat</h1>
 			</header>
 			<main class="join-main">
-				<form action="chat.html">
+				<form id='form' action="chat.html">
 					<div class="form-control">
 						<label for="username">Username</label>
 						<input
@@ -39,12 +39,56 @@
 						id="room"
 						placeholder="Enter a room name..."
 						required
-							
+						list="mylist"
+						autocomplete="off"
 						/>
+						<datalist id="mylist">
+						  </datalist>
+						<div class="form-control">
+							<label for="room">Create a room</label>
+							<input 
+							type="text"
+							name="password"
+							id="password"
+							placeholder="Enter a password..."
+							required
+							
+							/>
 					</div>
-					<button type="submit" class="btn">Join Chat</button>
+					<button  class="btn">Join Chat</button>
 				</form>
 			</main>
 		</div>
+		<div id="test">
+	</div>
+	<script type="text/javascript">
+	const roomName = document.getElementById('room');
+	const userList = document.getElementById('password');
+	
+
+	
+
+	
+        let url="http://localhost:3000/test";
+        fetch(url).then(response => response.json())
+        .then( (result) => {
+			
+			var rooms=result.title
+			console.log('success:', rooms)
+			let datalist=document.getElementById('mylist');
+			result.title.forEach(element => { 
+				 var option = document.createElement('option')
+				option.value = element.room
+				option.setAttribute ('key',element.password)
+				datalist.appendChild(option)
+})
+
+})
+		.catch(error => console.log('error:', error));
+
+
+   
+ 
+    </script>
 	</body>
 </html>

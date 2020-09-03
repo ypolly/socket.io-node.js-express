@@ -4,14 +4,17 @@ const roomName = document.getElementById('room-name');
 const userList = document.getElementById('users');
 
 
-const { username, room } = Qs.parse(location.search, {
+const { username, room, password } = Qs.parse(location.search, {
   ignoreQueryPrefix: true
 });
 
 const socket = io();
 
 
+
 socket.emit('joinRoom', { username, room });
+socket.emit('createRoom', {room , password});
+//console.log(rooms);
 
 socket.on('roomUsers', ({ room, users }) => {
   outputRoomName(room);
@@ -140,5 +143,35 @@ $(document).ready( () =>{
 }
 )
 
+function findRooms() {
+  var availableRooms = [];
+  var rooms = socket.sockets.adapter.rooms;
+  if (rooms) {
+      for (var room in rooms) {
+          if (!rooms[room].hasOwnProperty(room)) {
+              availableRooms.push(room);
+          }
+      }
+  }
+  console.log(availableRooms);
+  return availableRooms;
+}
 
+
+
+// function createRoom(){
+//   var room = $('#room').val().toString();
+//   var password = $('#password').val().toString();
+//   var room = {room: room, password: password};
+//   rooms.push(room);
+//   console.log(rooms);
+// }
+ 
+// function roomCreate(room, password) {
+// var newRoom = {room: room, password: password};
+// rooms.push(newRoom);
+// console.log(rooms);
+
+//   return newRoom;
+// }
 

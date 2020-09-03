@@ -4,6 +4,7 @@ const express = require('express');
 const socketio = require('socket.io');
 const {formatMessage, formatGif} = require('./utils/messages');
 
+
 const request= require('request');
 const {apiRequest, apiRequestRandom,apiRequestWeather} = require('./utils/api');
 const {
@@ -12,10 +13,15 @@ const {
   userLeave,
   getRoomUsers
 } = require('./utils/users');
+const {roomCreate,rooms} = require('./utils/rooms');
+
+var roomsList=[];
 
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
+
+
 
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -23,8 +29,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 const botName = 'ChatCord Bot';
 
 io.on('connection', socket => {
+   
   socket.on('joinRoom', ({ username, room }) => {
     const user = userJoin(socket.id, username, room);
+    
+    socket.on('createRoom',({ room, password }) =>{
+        roomsList= roomCreate(room, password);
+    } );
 
     socket.join(user.room);
 
@@ -91,6 +102,12 @@ io.on('connection', socket => {
        
         //console.log(api)
     });
+
+    socket.on('roomCreate',  ({ roomName, password }) =>{
+        var room=roomCreate(roomName, password);
+        console.log(room);
+    })
+
     
   socket.on('disconnect', () => {
     const user = userLeave(socket.id);
@@ -108,6 +125,16 @@ io.on('connection', socket => {
     }
   });
 });
+
+app.get('/test',(req,res)=>{
+    //res.sendFile(__dirname +'./public/index.html',);
+    res.json({title: roomsList});
+})
+
+app.get('/render',(req,res)=>{
+    res.sendFile(__dirname +'/public/index.html');
+})
+
 
 const PORT = process.env.PORT || 3000;
 
