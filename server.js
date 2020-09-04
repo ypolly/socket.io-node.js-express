@@ -3,7 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
 const {formatMessage, formatGif} = require('./utils/messages');
-
+const url = require('url'); 
 
 const request= require('request');
 const {apiRequest, apiRequestRandom,apiRequestWeather} = require('./utils/api');
@@ -16,26 +16,25 @@ const {
 const {roomCreate,rooms} = require('./utils/rooms');
 
 var roomsList=[];
-
+var roomk={};
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
 
 
-
+app.use(express.urlencoded({
+  extended: true
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const botName = 'Chat App';
 
 io.on('connection', socket => {
-   
-  socket.on('joinRoom', ({ username, room }) => {
-    const user = userJoin(socket.id, username, room);
+  socket.on('joinRoom', ({ username, room, password}) => {
     
-    socket.on('createRoom',({ room, password }) =>{
-        roomsList= roomCreate(room, password);
-    } );
+   
+    const user = userJoin(socket.id, username, room);
 
     socket.join(user.room);
 
@@ -134,6 +133,28 @@ app.get('/test',(req,res)=>{
 app.get('/render',(req,res)=>{
     res.sendFile(__dirname +'/public/index.html');
 })
+const querystring = require('querystring');    
+
+app.post('/room', (req, res) => {
+ let room= roomsList.find(room => room.room === req.body.room)
+ const query = querystring.stringify({
+  "username": req.body.username,
+  "room": req.body.room,
+  "password": req.body.password
+});
+if (room){
+  if (roomsList.find(room => room.password === req.body.password))
+  { res.redirect('chat.html?' + query)
+   }
+  else { res.redirect('/index.html')
+   
+}
+}else{
+  roomsList.push({room:req.body.room, password:req.body.password})
+  
+  res.redirect('chat.html?' + query)}
+
+});
 
 
 const PORT = process.env.PORT || 3000;

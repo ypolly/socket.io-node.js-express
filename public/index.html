@@ -20,7 +20,7 @@
 				<h1> SocketChat</h1>
 			</header>
 			<main class="join-main">
-				<form id='form' action="chat.html">
+				<form id='form' method="POST" action="/room">
 					<div class="form-control">
 						<label for="username">Username</label>
 						<input
@@ -62,18 +62,11 @@
 		<div id="test">
 	</div>
 	<script type="text/javascript">
-	const roomName = document.getElementById('room');
-	const userList = document.getElementById('password');
-	
 
-	
-
-	
         let url="http://localhost:3000/test";
         fetch(url).then(response => response.json())
         .then( (result) => {
-			
-			var rooms=result.title
+				var rooms=result.title
 			console.log('success:', rooms)
 			let datalist=document.getElementById('mylist');
 			result.title.forEach(element => { 

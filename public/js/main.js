@@ -12,9 +12,8 @@ const socket = io();
 
 
 
-socket.emit('joinRoom', { username, room });
-socket.emit('createRoom', {room , password});
-//console.log(rooms);
+socket.emit('joinRoom', { username, room, password });
+
 
 socket.on('roomUsers', ({ room, users }) => {
   outputRoomName(room);
@@ -159,19 +158,5 @@ function findRooms() {
 
 
 
-// function createRoom(){
-//   var room = $('#room').val().toString();
-//   var password = $('#password').val().toString();
-//   var room = {room: room, password: password};
-//   rooms.push(room);
-//   console.log(rooms);
-// }
- 
-// function roomCreate(room, password) {
-// var newRoom = {room: room, password: password};
-// rooms.push(newRoom);
-// console.log(rooms);
 
-//   return newRoom;
-// }
 
