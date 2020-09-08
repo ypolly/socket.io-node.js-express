@@ -16,7 +16,6 @@ const {
 const {roomCreate,rooms} = require('./utils/rooms');
 
 var roomsList=[];
-var roomk={};
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
@@ -64,7 +63,6 @@ io.on('connection', socket => {
           case 'val1':
            { apiRequest(search).then(data => {
                 var img = JSON.parse(JSON.stringify(data));
-                //console.log('Data:', img.data[0].images.original.url);
                 const user = getCurrentUser(socket.id);
                 io.to(user.room).emit('gif', formatGif(user.username, img.data[0].images.original.url));
      
@@ -76,7 +74,6 @@ io.on('connection', socket => {
             case 'val2':
                     { apiRequestRandom().then(data => {
                         var img = JSON.parse(JSON.stringify(data));
-                        //console.log('Data:', data);
                         const user = getCurrentUser(socket.id);
                         io.to(user.room).emit('gif', formatGif(user.username, img.data.images.original.url));
              
@@ -99,7 +96,7 @@ io.on('connection', socket => {
       }
        
        
-        //console.log(api)
+       
     });
 
     socket.on('roomCreate',  ({ roomName, password }) =>{
@@ -126,7 +123,6 @@ io.on('connection', socket => {
 });
 
 app.get('/test',(req,res)=>{
-    //res.sendFile(__dirname +'./public/index.html',);
     res.json({title: roomsList});
 })
 

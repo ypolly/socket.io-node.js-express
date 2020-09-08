@@ -43,7 +43,6 @@ function apiRequestRandom( callback ) {
 function apiRequestWeather( callback ) {
   return new Promise((resolve, reject) => {
   var accessKey = '121430a4a4914a343844889287678f4a';
-     // position=showPosition();
       var request = require('request');
     request.get({
       url: 'http://api.weatherstack.com/current?access_key=121430a4a4914a343844889287678f4a&query=Gothenburg',
@@ -61,18 +60,6 @@ function apiRequestWeather( callback ) {
   })
 }
 
-
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else { 
-   // x.innerHTML = "Geolocation is not supported by this browser.";
-  }
-}
-
-function showPosition(position) {
- return (position.coords.latitude + ',' + position.coords.longitude);
-}
 
 
 module.exports = {apiRequest, apiRequestRandom, apiRequestWeather};
